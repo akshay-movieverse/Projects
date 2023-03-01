@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Movie Counsel</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tilt Neon">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <style>
+        body {
+      background-color: #1a1a1a;
+      color: #fff;
+	  
+    }
+	
+	        .my_bg {
+    background-image:
+   linear-gradient(to right, rgb({{color[0]}}, {{color[1]}}, {{color[2]}}), calc((50vw - 170px) - 340px), rgba({{color[0]}}, {{color[1]}}, {{color[2]}}, 0.84) 30%, rgba({{color[0]}}, {{color[1]}}, {{color[2]}}, 0.84) 100%),
+    url("https://www.themoviedb.org/t/p/w1920_and_h800_multi_faces/{{ dat[0]['backdrop_path'] }}");
+    width: 100%;
+ 
+ background-position: left calc((50vw - 170px) - 340px) top;
+ 
+ background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+    padding: 20px;
+
+        }
+        
+
+			        .op_bg {
+
+    background: 					linear-gradient(to right bottom, rgb({{color[0]}}, {{color[1]}}, {{color[2]}}), rgba({{color[0]}}, {{color[1]}}, {{color[2]}}, 0.84));
+
+
+		background-color: rgb({{color[0]}}, {{color[1]}}, {{color[2]}});
+		}
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  
+  
+  
+  
+    <a style = "font-family: Tilt Neon;" class="navbar-brand" href="{{url_for('home')}}">Movies Counsel</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+	
+	
+	
+
+   <!-- <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Movies</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">TV Shows</a>
+        </li>
+      </ul>
+    </div> -->
+  </nav>
+  
+  
+  <div class="op_bg">
+			<div class="my_bg">
+		  
+			  <div  class="container mt-4">
+				<div class="row">
+				  <div class="col-md-4 mb-4">
+					<img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{ dat[0]['poster_path'] }}"  alt="Movie Poster" class="img-fluid">
+				  </div>
+				  <div class="col-md-8 mb-4">
+					<h1 class="mb-3">{{dat[0]['title']}}</h1>
+					<p class="mb-3">{{dat[0]['release_date'].split("-")[0] }} - {{dat[0]["runtime"]}} min</p>
+          {% set gen=[] %}
+          {% for i in dat[0]["genres"] %}
+            {% set tmp =  gen.append(i["name"]) %}
+          {% endfor %}
+					<p class="mb-3">{{ ", ".join(gen) }}</p>
+					<p class="mb-4">{{dat[0]['overview']}}</p>
+
+          {% if (dat[0]['videos']['results']) |length != 0 %}
+					<a href="https://www.youtube.com/watch?v={{dat[0]['videos']['results'][0]['key'] }}" class="btn btn-primary mb-3">Watch Trailer</a>
+					{% endif %}
+
+          <a href="#" class="btn btn-outline-secondary mb-3">Add to Watchlist</a>
+					<div class="row">
+					  <div class="col-md-4 mb-4">
+						<p class="font-weight-bold mb            2">Directed By:</p>
+            {% set gen=[] %}
+            {% for i in dat[0]["directors"] %}
+              {% set tmp =  gen.append(i["name"]) %}
+            {% endfor %}
+
+						<p class="mb-2">{{ ", ".join(gen) }}</p>
+					  </div>
+					  <div class="col-md-4 mb-4">
+						<p class="font-weight-bold mb-2">Written By:</p>
+            {% set gen=[] %}
+            {% for i in dat[0]["writer"] %}
+              {% set tmp =  gen.append(i["name"]) %}
+            {% endfor %}
+
+						<p class="mb-2">{{ ", ".join(gen) }}</p>
+					  </div>
+					  <div class="col-md-4 mb-4">
+						<p class="font-weight-bold mb-2">Starring:</p>
+            {% set gen=[] %}
+            {% for i in dat[0]["actors"] %}
+              {% set tmp =  gen.append(i["name"]) %}
+            {% endfor %}
+						<p class="mb-2">{{ ", ".join(gen) }}</p>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				
+				  </div>
+				 </div>
+	  
+	  </div>
+	
+	
+	  <div class="container mt-4">
+	
+	
+    <h2 class="mt-5 mb-3">Similar Movies</h2>
+    <div class="row">
+
+      {%for i in dat[1:5] %}
+        <div class="col-md-3 mb-4">
+          <div class="card text-white bg-dark">
+            <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{i['poster_path']}}" alt="Movie Poster" class="card-img-top">
+            <div class="card-body">
+              <h5 class="card-title mb-1">{{i["title"]}}</h5>
+              <p class="card-text mb-2">{{i['release_date'].split("-")[0] }} - {{i["runtime"]}} min</p>
+              <a href="/imdb/{{i['tmdbid']}}" class="btn btn-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+
+    </div>
+
+    <div class="row">
+
+      {%for i in dat[5:] %}
+        <div class="col-md-3 mb-4">
+          <div class="card text-white bg-dark">
+            <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/{{i['poster_path']}}" alt="Movie Poster" class="card-img-top">
+            <div class="card-body">
+              <h5 class="card-title mb-1">{{i["title"]}}</h5>
+              <p class="card-text mb-2">{{i['release_date'].split("-")[0] }} - {{i["runtime"]}} min</p>
+              <a href="/imdb/{{i['tmdbid']}}" class="btn btn-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+    {% endfor %}
+
+    </div>
+
+
+</div>
+  <!-- Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous
+    <!-- Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
+
