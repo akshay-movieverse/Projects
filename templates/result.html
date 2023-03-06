@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>Multi-Step Form with Bootstrap Dark Theme</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+
+      <style>
+        body {
+        background-color: rgb(8 8 8);
+        color: #fff;
+        }
+
+
+     </style>
+
+
+   </head>
+
+   <body>
+    <div class="container">
+        <h2>Results</h2>
+              
+        <table class="table table-striped table-dark">
+          <thead class="thead-dark">
+            <tr>
+              <th>Semester</th>
+              <th>Credits</th>
+              <th>Credit Points</th>
+              <th>SGPA</th>
+              <th>CGPA</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%for key, value in data.items %}
+            <tr>
+              <td>Sem {{key}}</td>
+              <td>{{value.totalCredit}}</td>
+              <td>{{value.totalPoints}}</td>
+              <td>{{value.SGPA}}</td>
+              <td>{{value.CGPA}}</td>
+            </tr>
+                {% endfor %}
+          </tbody>
+        </table>
+
+        <div>
+            {{ graph_div|safe }}
+            </div>
+      </div>
+      
+
+
+      </body>
+      </html>

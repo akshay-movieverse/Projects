@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>Multi-Step Form with Bootstrap Dark Theme</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+      <style>
+         body {
+         background-color: rgb(8 8 8);
+         color: #fff;
+         }
+         .step-content {
+         display: none;
+         }
+         .step-content.active {
+         display: block;
+         }
+         input{
+            background-color:rgb(24, 26, 27);
+            color:rgb(181, 175, 166);
+         }
+         form{
+            background-color:1c1e1f;
+         }
+         .form-control {
+            color: rgb(181, 175, 166);
+            background-color: rgb(24, 26, 27);
+            border-color: rgb(60, 65, 68);
+        }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <div class="row justify-content-center">
+            <div style="padding-top: 20px;" class="col-md-9">
+               <form action="result" method="POST" id="multi-step-form">
+                  <div class="card bg-dark text-white mb-3 border ">
+                     <div style="background-color:#1C1E1F;border-color:White; border-bottom-style: dashed;" class="card-header">
+                        <h3 id="title" class="mb-0">Sem-1</h3>
+                     </div>
+                     <div style="background-color:#232627;" id="dynamicElements" class="card-body">
+                        <input type="hidden" name="noSem" value={{sem}}>
+                        {% csrf_token %}
+                        {%for i in range %}
+                              {% if i == 1 %}
+                              <div class="step-content active" id="step-{{i}}">
+                                 {% else %}
+                                 <div class="step-content" id="step-{{i}}">
+                              {% endif %}
+                                 <div class="form-group">
+                              <div class="row">
+                              <div class="col-8">
+                                 <label for="name1">Subject Name 1</label>
+                                 <input type="text" class="form-control" placeholder="Subject Name 1" id="name1" name="{{i}}name1" required>
+                              </div>
+                              <div style="padding-left:0px" class="col-2">
+                                 <label for="name">Credits</label>
+                                 <input type="number" class="form-control" placeholder="Credits 1" id="credits1" name="{{i}}credits1" required>
+                              </div>
+                              
+                              <div style="padding-left:0px" class="col-2">
+                                 <label for="grade">Grade</label>
+
+                                    <select class="form-control" id="grade1" name="{{i}}grade1" required>
+                                    <option value="10">O(Outstanding)</option>
+                                    <option value="9">A+(Excellent)</option>
+                                    <option value="8">A(Very Good)</option>
+                                    <option value="7">B+(Good)</option>
+                                    <option value="6">B(Above Average)</option>
+                                    <option value="5">C(Average)</option>
+                                    <option value="4">P(Pass)</option>
+                                    <option value="0">F(Fail)</option>
+                                    </select>
+                              </div>
+                              </div>
+                              
+                           </div>
+                                 <div class="form-group">
+                                    <button type="button" class="btn btn-secondary" id={{i}} onClick="addField(this.id)">Add Field</button>
+                                    <button type="button" class="btn btn-danger" id={{i}} onClick="removeField(this.id)" >Remove Field</button>
+                                 </div>
+                        </div>
+                        {% endfor %}
+						
+						
+						
+
+                              </div>
+                        <div style="background-color:#1c1e1f;" class="card-footer">
+                              <div class="row">
+                                 <div class="col-6">
+                                    <button type="button" class="btn btn-secondary btn-back" disabled>Back</button>
+                                 </div>
+                                 <div class="col-6 text-right">
+                                    <button type="button" class="btn btn-primary btn-next">Next</button>
+                                    <button type="submit" class="btn btn-success btn-submit" style="display:none;">Submit</button>
+                                 </div>
+                              </div>
+                        </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+      <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <script>
+         $(function() {
+           var currentStep = 1;
+           var fieldCount = 1;
+           var maxFields = 10;
+         
+           // Next button click handler
+           $('.btn-next').click(function() {
+          var titleid = document.getElementById('title');
+             if (currentStep < {{sem}}) {
+               $('#step-' + currentStep).removeClass('active');
+               currentStep++;
+               $('#step-' + currentStep).addClass('active');
+             }
+         
+         
+         
+             if (currentStep == {{sem}}) {
+               $('.btn-next').hide();
+               $('.btn-submit').show();
+             }
+         
+             if (currentStep > 1) {
+               $('.btn-back').prop('disabled', false);
+             }
+         
+         titleid.innerText = "Sem-"+currentStep;
+           });
+         
+           // Back button click handler
+           $('.btn-back').click(function() {
+             var titleid = document.getElementById('title');
+         
+             if (currentStep > 1) {
+               $('#step-' + currentStep).removeClass('active');
+               currentStep--;
+               $('#step-' + currentStep).addClass('active');
+             }
+         
+             if (currentStep < {{sem}}) {
+               $('.btn-next').show();
+               $('.btn-submit').hide();
+             }
+         
+             if (currentStep == 1) {
+               $('.btn-back').prop('disabled', true);
+             }
+         
+         titleid.innerText = "Sem-"+currentStep;
+           });
+         
+         
+         
+         
+         
+         
+         });
+         
+         
+         
+         function addField(clicked_id) {
+         str = "#step-"+clicked_id;
+         console.log(str);
+                 var fieldCount = $(str+" .form-group").length -1;
+                 var newField = '<div class="form-group"><div class="row"><div class="col-8"><label for="name' + (fieldCount + 1) + '">Subject Name ' + (fieldCount + 1) + '</label><input type="text" class="form-control" placeholder="Subject Name ' + (fieldCount + 1) + '" id="name' + (fieldCount + 1) + '" name="'+clicked_id+'name' + (fieldCount + 1) + '" required></div><div style="padding-left:0px" class="col-2"><label for="cred">Credits</label><input type="number" class="form-control" placeholder="Credits ' + (fieldCount + 1) + '" id="credits' + (fieldCount + 1) + '" name="'+clicked_id+'credits' + (fieldCount + 1) + '" required></div><div style="padding-left:0px" class="col-2"><label for="grade">Grade</label><select class="form-control" id="grade' + (fieldCount + 1) + '" name="'+clicked_id+'grade' + (fieldCount + 1) + '" required><option value="10">O(Outstanding)</option><option value="9">A+(Excellent)</option><option value="8">A(Very Good)</option><option value="7">B+(Good)</option><option value="6">B(Above Average)</option><option value="5">C(Average)</option><option value="4">P(Pass)</option><option value="0">F(Fail)</option></select></div></div>';
+                 $(str+" .form-group:last").before(newField);
+                 if ($(str+" .form-group").length > 0) {
+                     $(".form-buttons button:nth-of-type(2)").prop("disabled", false);
+                 }
+             }
+         
+         
+          function removeField(clicked_id) {
+         str = "#step-"+clicked_id;
+                 var fieldCount = $(str+" .form-group").length;
+                 if (fieldCount > 1) {
+                     $(str+" .form-group:nth-last-child(2)").remove();
+                     if ($(str+" .form-group").length === 0) {
+                         $(".form-buttons button:nth-of-type(2)").prop("disabled", true);
+                     }
+                 }
+             }
+         
+      </script>
+   </body>
+</html>
+
+
+
+
+<!--
+      // Add field button click handler
+      $('.add-field').click(function() {
+        if (fieldCount < maxFields) {
+          var newField = '<div class="form-group"><label for="field-' + fieldCount + '">Field ' + fieldCount + '</label><input type="text" class="form-control" id="field-' + fieldCount + '" name="field-' + fieldCount + '"></div>';
+          $('#step-1 .form-group:last').before(newField);
+          fieldCount++;
+        }
+      });
+
+      // Remove field button click handler
+     $('.remove-field').click(function() {
+        if (fieldCount > 1) {
+          $('#step-1 .form-group:nth-last-child(2)').remove();
+          fieldCount--;
+        }
+      });
+
+      // Submit button click handler
+      $('.btn-submits').click(function() {
+        $('#multi-step-form').submit();
+      });
+	  
+	  
+	  	  
+'<div class="form-group"><label for="field' + (fieldCount + 1) + '">Field ' + (fieldCount + 1) + ':</label><input type="text" class="form-control" id="field' + (fieldCount + 1) + '" name="'+clicked_id+'field' + (fieldCount + 1) + '" placeholder="Enter field ' + (fieldCount + 1) + '"></div>';
+                
+	  
+<div class="form-group"><div class="row"><div class="col-8"><label for="name' + (fieldCount + 1) + '">Subject Name ' + (fieldCount + 1) + '</label><input type="text" class="form-control" placeholder="Subject Name ' + (fieldCount + 1) + '" id="name' + (fieldCount + 1) + '" name="'+clicked_id+'name' + (fieldCount + 1) + '"></div><div style="padding-left:0px" class="col-2"><label for="cred">Credits</label><input type="text" class="form-control" placeholder="Enter field ' + (fieldCount + 1) + '" id="credits' + (fieldCount + 1) + '" name="'+clicked_id+'credits' + (fieldCount + 1) + '"></div><div style="padding-left:0px" class="col-2"><label for="grade">Grade</label><select class="form-control" id="grade' + (fieldCount + 1) + '" name="'+clicked_id+'grade' + (fieldCount + 1) + '"><option value="10">O(Outstanding)</option><option value="9">A+(Excellent)</option><option value="8">A(Very Good)</option><option value="7">B+(Good)</option><option value="6">B(Above Average)</option><option value="5">C(Average)</option><option value="4">P(Pass)</option><option value="0">F(Fail)</option></select></div></div>																																																																																																																																
+	  
+	  
+	  
+	  
+	  -->
